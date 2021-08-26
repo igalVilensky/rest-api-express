@@ -19,7 +19,7 @@ const usersDataSchema = new mongoose.Schema({
   },
   toolStack: {
     type: Array,
-    default: "",
+    default: [],
   },
   email: {
     type: String,
