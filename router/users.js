@@ -1,22 +1,28 @@
 const express = require("express");
 const router = express.Router();
-
 const UsersData = require("../model/userModel");
+const {
+  getAllUsers,
+  getUser,
+  getOneUser,
+} = require("../controllers/usersController");
 
 // Get all users
 
-router.get("/", async (req, res) => {
+router.route("/").get(getAllUsers);
+
+/* router.get("/", async (req, res) => {
   try {
     const users = await UsersData.find();
     res.status(200).json(users);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
-});
+}); */
 
 // Add user
 
-router.post("/", async (req, res) => {
+/* router.post("/", async (req, res) => {
   const user = new UsersData({
     userName: req.body.userName,
     userPass: req.body.userPass,
@@ -32,30 +38,32 @@ router.post("/", async (req, res) => {
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
-});
+}); */
 
 // Middleware / Get one user
-async function getUser(req, res, next) {
-  let user;
-  try {
-    user = await UsersData.findOne({ userName: req.params.userName });
-    if (user == null) {
-      return status(404).json({ message: "User not found" });
-    }
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-  console.log(user);
-  res.user = user;
-  next();
-}
+// async function getUser(req, res, next) {
+//   let user;
+//   try {
+//     user = await UsersData.findOne({ userName: req.params.userName });
+//     if (user == null) {
+//       return status(404).json({ message: "User not found" });
+//     }
+//   } catch (err) {
+//     res.status(500).json({ message: err.message });
+//   }
+//   console.log(user);
+//   res.user = user;
+//   next();
+// }
 // Get one user
-router.get("/:userName", getUser, (req, res) => {
+
+router.route("./:userName").get(getUser, getOneUser);
+/* router.get("/:userName", getUser, (req, res) => {
   res.status(200).json(res.user);
 });
-
+ */
 // Delete one user
-
+/* 
 router.delete("/:userName", getUser, async (req, res) => {
   try {
     await res.user.remove();
@@ -63,11 +71,11 @@ router.delete("/:userName", getUser, async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
-});
+}); */
 
 // Patch one user
 
-router.patch("/:userName", getUser, async (req, res) => {
+/* router.patch("/:userName", getUser, async (req, res) => {
   console.log(req.body);
   console.log(res.user);
   if (req.body.userName) {
@@ -92,6 +100,6 @@ router.patch("/:userName", getUser, async (req, res) => {
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
-});
+}); */
 
 module.exports = router;
