@@ -1,4 +1,4 @@
-const usersData = require("../model/userModel");
+const UsersData = require("../model/userModel");
 const express = require("express");
 
 // Middleware - get one user by name
@@ -22,7 +22,7 @@ const getUser = async (req, res, next) => {
 
 const getAllUsers = async (req, res) => {
   try {
-    const users = await UsersData.findOne();
+    const users = await UsersData.find();
     res.status(200).json(
       users.map((user) => {
         /*     const {
@@ -46,7 +46,7 @@ const getAllUsers = async (req, res) => {
           userCreateDate: user.userCreateDate,
           request: {
             type: "GET",
-            url: `http://localhost:5000/users/${user.name}`,
+            url: `http://localhost:5000/users/${user.userName}`,
           },
         };
       })
@@ -60,8 +60,93 @@ const getOneUser = async (req, res) => {
   res.status(200).json(res.user);
 };
 
+const updateOneUser = async (req, res) => {
+  const { userName, userPass, age, fbw, toolStack, email, userCreateDate } =
+    req.body;
+  if (userName) {
+    res.user.userName = userName;
+  }
+  if (userPass) {
+    res.user.userPass = userPass;
+  }
+  if (age) {
+    res.user.age = age;
+  }
+  if (fbw) {
+    res.user.fbw = fbw;
+  }
+  if (toolStack) {
+    res.user.toolStack = toolStack;
+  }
+  if (email) {
+    res.user.email = email;
+  }
+  if (userCreateDate) {
+    res.user.userCreateDate = userCreateDate;
+  }
+  try {
+    await res.user.save();
+    res.status(200).json({ message: "User was updated", data: res.user });
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+};
+
+const addNewUser = async (req, res) => {
+  const user = new UsersData({
+    userName: req.body.userName,
+    userPass: req.body.userPass,
+    age: req.body.age,
+    fbw: req.body.fbw,
+    toolStack: req.body.toolStack,
+    email: req.body.email,
+  });
+  try {
+    const newUser = await user.save();
+    res.status(201).json(newUser);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+};
+
+const deleteOneUser = async (req, res) => {
+  try {
+    await res.user.remove();
+    res.status(200).json({ message: "User was deleted" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+const updateAllUsersData = async (req, res) => {
+  try {
+    await UsersData.updateOne(
+      { userName: req.params.userName },
+      {
+        $set: {
+          userName: req.body.userName,
+          userPass: req.body.userPass,
+          age: req.body.age,
+          fbw: req.body.fbw,
+          toolStack: req.body.toolStack,
+          email: req.body.email,
+        },
+        $currentDate: {
+          userCreateDate: Date.now,
+        },
+      }
+    );
+    res.status(200).json({ message: "User was updated" });
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+};
 module.exports = {
   getUser,
   getAllUsers,
   getOneUser,
+  updateOneUser,
+  deleteOneUser,
+  updateAllUsersData,
+  addNewUser,
 };

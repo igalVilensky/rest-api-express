@@ -1,15 +1,19 @@
 const express = require("express");
 const router = express.Router();
-const UsersData = require("../model/userModel");
+/* const UsersData = require("../model/userModel"); */
 const {
   getAllUsers,
   getUser,
   getOneUser,
+  updateOneUser,
+  deleteOneUser,
+  updateAllUsersData,
+  addNewUser,
 } = require("../controllers/usersController");
 
 // Get all users
 
-router.route("/").get(getAllUsers);
+router.route("/").get(getAllUsers).post(addNewUser);
 
 /* router.get("/", async (req, res) => {
   try {
@@ -57,7 +61,13 @@ router.route("/").get(getAllUsers);
 // }
 // Get one user
 
-router.route("./:userName").get(getUser, getOneUser);
+router
+  .route("/:userName")
+  .get(getUser, getOneUser)
+  .patch(getUser, updateOneUser)
+  .delete(getUser, deleteOneUser)
+  .put(getUser, updateAllUsersData);
+
 /* router.get("/:userName", getUser, (req, res) => {
   res.status(200).json(res.user);
 });
