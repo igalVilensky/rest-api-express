@@ -9,12 +9,12 @@ const {
   deleteOneUser,
   updateAllUsersData,
   addNewUser,
+  userDataCheck,
 } = require("../controllers/usersController");
 
 // Get all users
 
-router.route("/").get(getAllUsers).post(addNewUser);
-
+router.route("/").get(getAllUsers).post(userDataCheck, addNewUser);
 /* router.get("/", async (req, res) => {
   try {
     const users = await UsersData.find();
@@ -111,5 +111,7 @@ router.delete("/:userName", getUser, async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 }); */
+
+/* router.route("/display/:userName").get(getUser, getOneUser); */
 
 module.exports = router;

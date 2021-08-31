@@ -7,14 +7,40 @@ const getUser = async (req, res, next) => {
   let user;
   try {
     user = await UsersData.findOne({ userName: req.params.userName });
-    if (user == null) {
+    if ((user.length = 0)) {
       return status(404).json({ message: "User not found" });
     }
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
-  console.log(user);
+  /* console.log(user); */
   res.user = user;
+  next();
+};
+
+// Middleware - check username in order to create new user
+
+const userDataCheck = async (req, res, next) => {
+  let user = req.body;
+  console.log(user);
+  try {
+    if (user.length == 0) {
+      return status(400).json({ message: "Please enter username" });
+    } else if (req.body.age < 18) {
+      return status(400).json({ message: "You must be over 18" });
+    } else if (req.body.userPass.length == 0) {
+      return status(500).send("Please enter a valid password");
+    } else if (req.body.fbw !== 48) {
+      return status(500).send(
+        "Please note that you must be a part of fbw-48 class"
+      );
+    } else if (req.body.email.length == 0) {
+      return status(401).json({ message: "Please enter an email" });
+    }
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+  req.body = user;
   next();
 };
 
@@ -22,7 +48,7 @@ const getUser = async (req, res, next) => {
 
 const getAllUsers = async (req, res) => {
   try {
-    const users = await UsersData.find();
+    const users = await UsersData.find(); /* .select("userName fbw") */
     res.status(200).json(
       users.map((user) => {
         /*     const {
@@ -101,6 +127,7 @@ const addNewUser = async (req, res) => {
     toolStack: req.body.toolStack,
     email: req.body.email,
   });
+  console.log(req.body.userName.length);
   try {
     const newUser = await user.save();
     res.status(201).json(newUser);
@@ -141,6 +168,7 @@ const updateAllUsersData = async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 };
+
 module.exports = {
   getUser,
   getAllUsers,
@@ -149,4 +177,5 @@ module.exports = {
   deleteOneUser,
   updateAllUsersData,
   addNewUser,
+  userDataCheck,
 };
