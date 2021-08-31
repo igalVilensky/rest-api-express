@@ -15,6 +15,9 @@ mongoose
 const users = require("./router/users");
 app.use("/users", users);
 
+const display = require("./router/display");
+app.use("/display", display);
+
 app.get("/", (req, res) => {
   res.status(200).send("Welcome to our App!");
 });
