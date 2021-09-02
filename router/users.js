@@ -1,20 +1,38 @@
 const express = require("express");
 const router = express.Router();
-/* const UsersData = require("../model/userModel"); */
-const {
-  getAllUsers,
-  getUser,
-  getOneUser,
-  updateOneUser,
-  deleteOneUser,
-  updateAllUsersData,
-  addNewUser,
-  userDataCheck,
-} = require("../controllers/usersController");
+const userController = require("../controllers/usersController");
+const userMdd = require("../middleware/");
 
-// Get all users
+// http://localhost:5000/users
 
-router.route("/").get(getAllUsers).post(userDataCheck, addNewUser);
+router
+  .route("/")
+  .get(userController.getAllUsers)
+  .post(
+    userMdd.checkUserData,
+    userMdd.checkAge,
+    userMdd.checkFbw,
+    userController.addNewUser
+  );
+
+// http://localhost:5000/users/:name
+
+router
+  .route("/:name")
+  .put(userMdd.getUser, userController.updateUserData)
+  .patch(userMdd.getUser, userController.patchUserData);
+
+// const {
+//   getAllUsers,
+//   getUser,
+//   getOneUser,
+//   updateOneUser,
+//   deleteOneUser,
+//   updateAllUsersData,
+//   addNewUser,
+//   userDataCheck,
+// } = require("../controllers/usersController");
+// router.route("/").get(getAllUsers).post(userDataCheck, addNewUser);
 /* router.get("/", async (req, res) => {
   try {
     const users = await UsersData.find();
@@ -61,12 +79,12 @@ router.route("/").get(getAllUsers).post(userDataCheck, addNewUser);
 // }
 // Get one user
 
-router
-  .route("/:userName")
-  .get(getUser, getOneUser)
-  .patch(getUser, updateOneUser)
-  .delete(getUser, deleteOneUser)
-  .put(getUser, updateAllUsersData);
+// router
+//   .route("/:userName")
+//   .get(getUser, getOneUser)
+//   .patch(getUser, updateOneUser)
+//   .delete(getUser, deleteOneUser)
+//   .put(getUser, updateAllUsersData);
 
 /* router.get("/:userName", getUser, (req, res) => {
   res.status(200).json(res.user);
