@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const userController = require("../controllers/usersController");
-const userMdd = require("../middleware/");
+const userMdd = require("../middleware/index");
 
 // http://localhost:5000/users
 
